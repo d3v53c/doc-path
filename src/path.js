@@ -5,6 +5,10 @@ module.exports = {
     setPath
 };
 
+function isPrototypePolluted(keyPath) {
+  return ['__proto__', 'prototype', 'constructor'].some((key) => keyPath.startsWith(key));
+}
+
 function evaluatePath(document, keyPath) {
     if (!document) {
         return null;
@@ -37,7 +41,7 @@ function setPath(document, keyPath, value) {
     }
 
     // If this is clearly a prototype pollution attempt, then refuse to modify the path
-    if (keyPath.startsWith('__proto__') || keyPath.startsWith('constructor')) {
+    if (isPrototypePolluted(keyPath)) {
         return document;
     }
 
